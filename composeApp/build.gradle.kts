@@ -40,6 +40,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
+        androidMain.dependencies {
+            implementation(libs.compose.uiToolingPreview)
+            implementation(libs.androidx.activity.compose)
+            implementation("androidx.compose.material:material-icons-extended:1.7.6")
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

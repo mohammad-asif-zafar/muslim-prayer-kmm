@@ -11,20 +11,4 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun PrayerRow(name: String, time: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = name, 
-            fontWeight = FontWeight.Medium
-        )
-        Text(
-            text = time,
-            fontWeight = FontWeight.Normal
-        )
-    }
-}
+expect fun PrayerRow(name: String, time: String)
