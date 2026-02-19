@@ -2,6 +2,8 @@ package com.hathway.muslimprayerkmm.ui
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,13 +30,13 @@ actual fun PrayerCard(
     onToggle: (Boolean) -> Unit
 ) {
     var isPressed by remember { mutableStateOf(false) }
-    
+
     val animatedCardColor by animateColorAsState(
         targetValue = if (prayer.isNotificationEnabled) Color(0xFF0A4D3C) else Color.White,
         animationSpec = tween(durationMillis = 300),
         label = "cardColor"
     )
-    
+
     val animatedBorderColor by animateColorAsState(
         targetValue = if (isPressed) Color(0xFF0A4D3C) else Color.Transparent,
         animationSpec = tween(durationMillis = 200),
@@ -47,7 +52,7 @@ actual fun PrayerCard(
                 color = animatedBorderColor,
                 shape = RoundedCornerShape(12.dp)
             )
-            .clickable { 
+            .clickable {
                 isPressed = !isPressed
                 onToggle(!prayer.isNotificationEnabled)
             },
@@ -77,7 +82,7 @@ actual fun PrayerCard(
                     fontSize = 24.sp,
                     color = if (prayer.isNotificationEnabled) Color.White else Color(0xFF0A4D3C)
                 )
-                
+
                 // Prayer name and time
                 Column {
                     Text(
@@ -90,18 +95,18 @@ actual fun PrayerCard(
                         text = prayer.time,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
-                        color = if (prayer.isNotificationEnabled) 
-                            Color.White.copy(alpha = 0.8f) 
-                        else 
+                        color = if (prayer.isNotificationEnabled)
+                            Color.White.copy(alpha = 0.8f)
+                        else
                             Color(0xFF0A4D3C).copy(alpha = 0.7f)
                     )
                 }
             }
-            
+
             // Right side: Toggle switch
             Switch(
                 checked = prayer.isNotificationEnabled,
-                onCheckedChange = { 
+                onCheckedChange = {
                     onToggle(it)
                 },
                 colors = SwitchDefaults.colors(
@@ -114,3 +119,4 @@ actual fun PrayerCard(
         }
     }
 }
+

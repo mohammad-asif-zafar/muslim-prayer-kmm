@@ -1,160 +1,132 @@
 package com.hathway.muslimprayerkmm.ui
 
 import androidx.compose.animation.core.*
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.PI
 
 @Composable
-actual fun CountdownTimer() {
-    var progress by remember { mutableStateOf(0.7f) }
+actual fun CountdownTimer(
+    state: CountdownUiState
+) {
+
     val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = tween(durationMillis = 1000),
+        targetValue = state.progress,
+        animationSpec = tween(durationMillis = 800),
         label = "progress"
     )
-    
-    // Animated sun rotation
-    val rotationAnimation by rememberInfiniteTransition(label = "sunRotation").animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
+
+    val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.02f,
         animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = androidx.compose.animation.core.LinearEasing),
-            repeatMode = RepeatMode.Restart
-        )
+            animation = tween(2000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale"
     )
 
+    val arcColor = when (state.prayerType) {
+        PrayerType.Fajr -> Color(0xFF4A90E2)
+        PrayerType.Dhuhr -> Color(0xFFFFB300)
+        PrayerType.Asr -> Color(0xFFFF8F00)
+        PrayerType.Maghrib -> Color(0xFFA14D12)
+        PrayerType.Isha -> Color(0xFF3949AB)
+    }
+
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 24.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(180.dp)
+                .scale(scale)
+                .background(Color.White, CircleShape)
+                .shadow(
+                    elevation = 4.dp,
+                    shape = CircleShape
+                )
         ) {
-            // Animated sun icon
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                Color(0xFFFFD700),
-                                Color(0xFFFFA500)
-                            )
-                        ),
-                        shape = CircleShape
+
+            Canvas(modifier = Modifier.fillMaxSize()) {
+
+                val strokeWidth = 10.dp.toPx()
+                val radius = (size.minDimension / 2) - strokeWidth / 2
+
+                drawCircle(
+                    color = arcColor.copy(alpha = 0.15f),
+                    radius = radius,
+                    style = Stroke(width = strokeWidth)
+                )
+
+                drawArc(
+                    brush = Brush.linearGradient(
+                        listOf(arcColor, arcColor.copy(alpha = 0.8f))
                     ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "☀️",
-                    fontSize = 28.sp,
-                    color = Color.White,
-                    modifier = Modifier.rotate(rotationAnimation)
+                    startAngle = -90f,
+                    sweepAngle = 360f * animatedProgress,
+                    useCenter = false,
+                    size = Size(radius * 2, radius * 2),
+                    style = Stroke(
+                        width = strokeWidth,
+                        cap = StrokeCap.Round
+                    )
                 )
             }
 
-            // Enhanced circular progress timer
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(220.dp)
-                    .background(
-                        color = Color.White,
-                        shape = CircleShape
-                    )
-                    .shadow(
-                        elevation = 12.dp,
-                        shape = CircleShape,
-                        spotColor = Color(0xFF0A4D3C).copy(alpha = 0.2f)
-                    )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Canvas(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    val canvasWidth = size.width
-                    val canvasHeight = size.height
-                    val strokeWidth = 14.dp.toPx()
-                    val radius = (minOf(canvasWidth, canvasHeight) / 2) - strokeWidth / 2
 
-                    // Background circle with gradient
-                    drawCircle(
-                        color = Color.LightGray.copy(alpha = 0.2f),
-                        radius = radius,
-                        style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-                    )
+                Text(
+                    text = state.timeText,
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = arcColor,
+                    textAlign = TextAlign.Center
+                )
 
-                    // Progress arc with gradient
-                    drawArc(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF0A4D3C),
-                                Color(0xFF0F6B56)
-                            )
-                        ),
-                        startAngle = -90f,
-                        sweepAngle = 360f * animatedProgress,
-                        useCenter = false,
-                        size = Size(radius * 2, radius * 2),
-                        style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-                    )
-                }
+                Spacer(modifier = Modifier.height(6.dp))
 
-                // Enhanced time display
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "24:44",
-                        fontSize = 42.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0A4D3C),
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Mins Remaining",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "for Iftar",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF0A4D3C),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    text = "Time Remaining",
+                    fontSize = 13.sp,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Text(
+                    text = "for ${state.prayerType.name}",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = arcColor,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
