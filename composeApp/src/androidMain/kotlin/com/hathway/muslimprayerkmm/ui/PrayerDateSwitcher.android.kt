@@ -25,50 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/*@Composable
-actual fun PrayerDateSwitcher(
-    dateText: String, onPreviousClick: () -> Unit, onNextClick: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        shape = RoundedCornerShape(28.dp),
-        tonalElevation = 3.dp,
-        shadowElevation = 2.dp,
-        color = Color(0xFFF4F6F5) // soft tinted background
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            IconButton(
-                onClick = onPreviousClick, modifier = Modifier.size(36.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Previous Day"
-                )
-            }
-
-            Text(
-                text = dateText, fontSize = 15.sp, fontWeight = FontWeight.Medium
-            )
-
-            IconButton(
-                onClick = onNextClick, modifier = Modifier.size(36.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "Next Day"
-                )
-            }
-        }
-    }
-}*/
-
 @Composable
 actual fun PrayerDateSwitcher(
     dateText: String,

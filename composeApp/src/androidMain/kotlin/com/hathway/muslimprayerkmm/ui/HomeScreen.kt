@@ -9,8 +9,9 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -66,7 +67,7 @@ actual fun HomeScreen() {
                 onLocationClick = { /* TODO: Handle location click */ },
                 onInfoClick = { /* TODO: Handle info click */ },
                 onNotificationClick = { /* TODO: Handle notification click */ },
-                gregorianDate = "17th Feb 2026"
+                gregorianDate = "17th February 2026"
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -78,60 +79,43 @@ actual fun HomeScreen() {
             )
 
             Column {
-                PrayerDateSwitcher(
-                    dateText = dateText,
-                    onPreviousClick = {
-                        slideDirection = -1
-                        selectedDay--
-                    },
-                    onNextClick = {
-                        slideDirection = 1
-                        selectedDay++
-                    }
-                )
+                PrayerDateSwitcher(dateText = dateText, onPreviousClick = {
+                    slideDirection = -1
+                    selectedDay--
+                }, onNextClick = {
+                    slideDirection = 1
+                    selectedDay++
+                })
             }
 
             AnimatedContent(
-                targetState = selectedDay,
-                transitionSpec = {
-                    (slideInHorizontally { slideDirection * it } + fadeIn())
-                        .togetherWith(
-                            slideOutHorizontally { -slideDirection * it } + fadeOut()
-                        )
-                },
-                label = "prayerListSlide"
+                targetState = selectedDay, transitionSpec = {
+                    (slideInHorizontally { slideDirection * it } + fadeIn()).togetherWith(
+                        slideOutHorizontally { -slideDirection * it } + fadeOut())
+                }, label = "prayerListSlide"
             ) {
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Box(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(prayerTimes) { prayer ->
-                        PrayerCard(
-                            prayer = prayer,
-                            onToggle = { }
-                        )
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        itemsIndexed(prayerTimes) { index, prayer ->
+                            TimelinePrayerCard(
+                                prayer = prayer,
+                                isFirst = index == 0,
+                                isLast = index == prayerTimes.lastIndex
+                            )
+                        }
                     }
                 }
-            }
-            /*LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(prayerTimes) { prayer ->
-                    PrayerCard(
-                        prayer = prayer, onToggle = { })
-                }
-            }*/
         }
     }
 }
+}
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun HomeScreenPreview() {
     MaterialTheme {
