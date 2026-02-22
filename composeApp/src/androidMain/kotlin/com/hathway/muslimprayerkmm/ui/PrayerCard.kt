@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +57,7 @@ actual fun PrayerCard(
                 color = animatedBorderColor,
                 shape = RoundedCornerShape(12.dp)
             )
-            .clickable { 
+            .clickable {
                 isPressed = !isPressed
                 onToggle(!prayer.isNotificationEnabled)
             },
@@ -86,7 +87,7 @@ actual fun PrayerCard(
                     fontSize = 24.sp,
                     color = if (prayer.isNotificationEnabled) Color.White else Color(0xFF0A4D3C)
                 )
-                
+
                 // Prayer name and time
                 Column {
                     Text(
@@ -99,18 +100,18 @@ actual fun PrayerCard(
                         text = prayer.time,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
-                        color = if (prayer.isNotificationEnabled) 
-                            Color.White.copy(alpha = 0.8f) 
-                        else 
+                        color = if (prayer.isNotificationEnabled)
+                            Color.White.copy(alpha = 0.8f)
+                        else
                             Color(0xFF0A4D3C).copy(alpha = 0.7f)
                     )
                 }
             }
-            
+
             // Right side: Toggle switch
             Switch(
                 checked = prayer.isNotificationEnabled,
-                onCheckedChange = { 
+                onCheckedChange = {
                     onToggle(it)
                 },
                 colors = SwitchDefaults.colors(

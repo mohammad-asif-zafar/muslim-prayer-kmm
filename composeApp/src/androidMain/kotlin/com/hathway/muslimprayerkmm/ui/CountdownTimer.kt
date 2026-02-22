@@ -55,7 +55,7 @@ actual fun CountdownTimer(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp),
+            .padding(vertical = 12.dp),
         contentAlignment = Alignment.Center
     ) {
 

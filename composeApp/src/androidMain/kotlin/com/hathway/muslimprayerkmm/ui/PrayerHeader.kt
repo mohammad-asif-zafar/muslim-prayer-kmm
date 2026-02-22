@@ -110,7 +110,7 @@ actual fun PrayerHeader(
                 )
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // 🌙 Hijri Date (Primary)
             Text(
